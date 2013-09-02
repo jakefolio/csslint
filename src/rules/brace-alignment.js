@@ -19,23 +19,37 @@ CSSLint.addRule({
     init: function(parser, reporter) {
         var rule = this;
         var ruleValue = rule.value || rule.defaultValue;
-        var ruleStartCol;
-        var ruleStartLine;
+        var ruleStartColumn = [];
+        var ruleStartLine = [];
 
-        parser.addListener("startrule", function(event) {
+        function initValues(event) {
             var stream = this._tokenStream;
             
-            ruleStartCol = event.col;
-            ruleStartLine = event.line;
-        });
+            ruleStartColumn.push(event.col);
+            ruleStartLine.push(event.line);
+        }
 
-        parser.addListener("endrule", function(event) {
+        function checkLineAlignment(event) {
             var stream = this._tokenStream;
 
-            if (!rule.evaluate(stream, ruleStartCol, ruleStartLine)) {
+            if (!rule.evaluate(stream, ruleStartColumn.pop(), ruleStartLine.pop())) {
                 reporter.report(rule.messages[ruleValue], stream._token.startLine, stream._token.endCol, rule); 
             }
-        });
+        }
+
+        parser.addListener("startrule", initValues);
+        parser.addListener("startfontface", initValues);
+        parser.addListener("startpage", initValues);
+        parser.addListener("startpagemargin", initValues);
+        parser.addListener("startmedia", initValues);
+        parser.addListener("startkeyframes", initValues);
+
+        parser.addListener("endrule", checkLineAlignment);
+        parser.addListener("endfontface", checkLineAlignment);
+        parser.addListener("endpage", checkLineAlignment);
+        parser.addListener("endpagemargin", checkLineAlignment);
+        parser.addListener("endmedia", checkLineAlignment);
+        parser.addListener("endkeyframes", checkLineAlignment);
 
     },
 
@@ -46,7 +60,7 @@ CSSLint.addRule({
      * @param  {integer} ruleStartLine Start line of initial selector, check for single line declaration
      * @return {boolean} Determines if rule passes or fails
      */
-    evaluate: function(stream, ruleStartCol, ruleStartLine) {
+    evaluate: function(stream, ruleStartColumn, ruleStartLine) {
         var rule = this;
         var ruleValue = rule.value || rule.defaultValue;
         var token;
@@ -65,7 +79,7 @@ CSSLint.addRule({
         }
 
         // Check if columns match for RBRACE and first selector
-        if (ruleStartCol !== token.startCol) {
+        if (ruleStartColumn !== token.startCol) {
             return false;
         }
 
