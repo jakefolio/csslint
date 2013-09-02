@@ -8,12 +8,11 @@ CSSLint.addRule({
     id: "brace-alignment",
     name: "Check alignment of selectors and end brace",
     desc: "Determine if selector column and ending brace match",
-    // Value Options: newline|sameline
+    // Value Options: align
     defaultValue: 'align',
     value: undefined,
     messages: {
         'align': "Ending brace does not align with start of selectors",
-        'noalign': "",
     },
 
     //initialization
