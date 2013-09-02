@@ -9,7 +9,7 @@ CSSLint.addRule({
     id: "space-colon",
     name: "Space after property colon",
     desc: "Determine if space after colon is required",
-    // Value Options: newline|sameline
+    // Value Options: space|nospace
     defaultValue: 'space',
     value: undefined,
     messages: {
