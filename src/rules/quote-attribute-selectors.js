@@ -9,7 +9,7 @@ CSSLint.addRule({
     name: "Check quotes in attribute selector",
     desc: "Determine if quotes are being used to wrap attribute selectors",
     // Value Options: single|double
-    defaultValue: 'single',
+    defaultValue: 'double',
     value: undefined,
     messages: {
         'single': "Single quotes are required when using attribute selectors",
